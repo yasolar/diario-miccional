@@ -20,7 +20,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('manual'); // Estado para controlar a aba ativa
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('pt-BR');
     setData(today);
 
     const storedEntradas = localStorage.getItem('diarioMiccional');
@@ -53,14 +53,16 @@ function App() {
     };
 
     const novasEntradas = [...entradas, novaEntrada].sort((a, b) => {
-      const dateA = new Date(`${a.data}T${a.hora}`);
-      const dateB = new Date(`${b.data}T${b.hora}`);
+      const [dayA, monthA, yearA] = a.data.split('/');
+      const [dayB, monthB, yearB] = b.data.split('/');
+      const dateA = new Date(`${yearA}-${monthA}-${dayA}T${a.hora}`);
+      const dateB = new Date(`${yearB}-${monthB}-${dayB}T${b.hora}`);
       return dateA - dateB;
     });
 
     setEntradas(novasEntradas);
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('pt-BR');
     setData(today);
     setAcao('');
     setTipoLiquido('');
@@ -172,8 +174,8 @@ function App() {
               <input
                 type="date"
                 id="data"
-                value={data}
-                onChange={(e) => setData(e.target.value)}
+                value={data.split('/').reverse().join('-')}
+                onChange={(e) => setData(e.target.value.split('-').reverse().join('/'))}
                 required
               />
             </div>
